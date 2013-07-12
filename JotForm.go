@@ -61,9 +61,8 @@ func (client JotformAPIClient) getRequest(requestPath string) []byte {
 func (client JotformAPIClient) postRequest(requestPath string, params map[string]string) [] byte {
     client.checkClient()
 
-    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?apiKey=" + client.ApiKey
-
-
+    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?apiKey=" + client.ApiKey  
+    
     values := make(url.Values)
 
     for k, _ := range params {
@@ -71,6 +70,40 @@ func (client JotformAPIClient) postRequest(requestPath string, params map[string
     }
 
     response, err := http.PostForm(path, values)
+
+    if err != nil {
+        fmt.Printf("%s", err)
+        os.Exit(1)
+    } else {
+        defer response.Body.Close()
+        contents, err := ioutil.ReadAll(response.Body)
+        if err != nil {
+            fmt.Printf("%s", err)
+            os.Exit(1)
+        }
+
+        var f interface{}
+
+        json.Unmarshal(contents, &f)
+
+        result := f.(map[string]interface{})["content"]
+
+        content, err := json.Marshal(result)
+
+        return content
+    }
+
+    return nil
+}
+
+func (client JotformAPIClient) deleteRequest(requestPath string) [] byte {
+    client.checkClient()
+
+    var path = "http://api.jotform.com/v1/" + requestPath + "?apiKey=" + client.ApiKey  
+
+    request, err := http.NewRequest("DELETE", path, nil)
+
+    response, err := http.DefaultClient.Do(request)
 
     if err != nil {
         fmt.Printf("%s", err)
@@ -198,3 +231,8 @@ func (client JotformAPIClient) GetFormProperties(formID int64) []byte {
 func (client JotformAPIClient) GetFormProperty(formID int64, propertyKey string) []byte {
     return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/properties/" + propertyKey)
 }
+
+func (client JotformAPIClient) DeleteSubmission(sid int64) []byte {
+    return client.deleteRequest("submission/" + strconv.FormatInt(sid, 10))
+}
+
