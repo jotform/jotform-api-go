@@ -26,13 +26,13 @@ func (client JotformAPIClient) checkClient() {
     }
 }
 
-func (client JotformAPIClient) getRequest(requestPath string) []byte {
+func (client JotformAPIClient) getRequest(requestPath string, params string) []byte {
     client.checkClient()
-
-    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?apiKey=" + client.ApiKey
+    
+    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?" + params + "apiKey=" + client.ApiKey
 
     response, err := http.Get(path)
-    
+
     if err != nil {
         fmt.Printf("%s", err)
         os.Exit(1)
@@ -60,9 +60,9 @@ func (client JotformAPIClient) getRequest(requestPath string) []byte {
 
 func (client JotformAPIClient) postRequest(requestPath string, params map[string]string) [] byte {
     client.checkClient()
-
-    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?apiKey=" + client.ApiKey  
     
+    var path = baseURL + "/" + apiVersion + "/" + requestPath + "?apiKey=" + client.ApiKey
+
     values := make(url.Values)
 
     for k, _ := range params {
@@ -130,56 +130,82 @@ func (client JotformAPIClient) deleteRequest(requestPath string) [] byte {
     return nil
 }
 
+func createConditions (offset string, limit string, filter map[string]string, orderBy string) string {
+    var params = ""
+
+    if offset != "" {
+        params = "offset=" + offset + "&"
+    }
+
+    if limit!= "" {
+        params = params + "limit=" + limit + "&"
+    }
+
+    if filter != nil {
+        for k,_ := range filter {
+            params = params + "filter={\"" + k + "\":\"" + filter[k] + "\"}" + "&"
+        }
+    }
+
+    if orderBy != "" {
+        params = params + "order_by=" + orderBy + "&"
+    }
+
+    return params
+}
+
 func (client JotformAPIClient) GetUser() []byte {
-    return client.getRequest("user")
+    return client.getRequest("user", "")
 }
 
 func (client JotformAPIClient) GetUsage() []byte {
-    return client.getRequest("user/usage")
+    return client.getRequest("user/usage", "")
 }
 
 func (client JotformAPIClient) GetForms() []byte {
-    return client.getRequest("user/forms")
+    return client.getRequest("user/forms", "")
 }
 
-func (client JotformAPIClient) GetSubmissions() []byte {
-    return client.getRequest("user/submissions")
+func (client JotformAPIClient) GetSubmissions(offset string, limit string, filter map[string]string, orderBy string) []byte {
+    var params = createConditions(offset, limit, filter, orderBy)
+
+    return client.getRequest("user/submissions", params)
 }
 
 func (client JotformAPIClient) GetSubusers() []byte {
-    return client.getRequest("user/subusers")
+    return client.getRequest("user/subusers", "")
 }
 
 func (client JotformAPIClient) GetFolders() []byte {
-    return client.getRequest("user/folders")
+    return client.getRequest("user/folders", "")
 }
 
 func (client JotformAPIClient) GetReports() []byte {
-    return client.getRequest("user/reports")
+    return client.getRequest("user/reports", "")
 }
 
 func (client JotformAPIClient) GetSettings() []byte {
-    return client.getRequest("user/settings")
+    return client.getRequest("user/settings", "")
 }
 
 func (client JotformAPIClient) GetHistory() []byte {
-    return client.getRequest("user/history")
+    return client.getRequest("user/history", "")
 }
 
 func (client JotformAPIClient) GetForm(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10))
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10), "")
 }
 
 func (client JotformAPIClient) GetFormQuestions(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/questions")
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/questions", "")
 }
 
 func (client JotformAPIClient) GetFormQuestion(formID int64, qid int) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid))
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid), "")
 }
 
 func (client JotformAPIClient) GetFormSubmissions(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/submissions")
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/submissions", "")
 }
 
 func (client JotformAPIClient) CreateFormSubmissions(formId int64, submission map[string]string) []byte {
@@ -197,11 +223,11 @@ func (client JotformAPIClient) CreateFormSubmissions(formId int64, submission ma
 }
 
 func (client JotformAPIClient) GetFormFiles(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/files")
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/files", "")
 }
 
 func (client JotformAPIClient) GetFormWebhooks(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/webhooks")
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/webhooks", "")
 }
 
 func (client JotformAPIClient) CreateFormWebhook(formId int64, webhookURL string) []byte {
@@ -213,23 +239,23 @@ func (client JotformAPIClient) CreateFormWebhook(formId int64, webhookURL string
 }
 
 func(client JotformAPIClient) GetSubmission(sid int64) []byte {
-    return client.getRequest("user/submission/" + strconv.FormatInt(sid, 10))
+    return client.getRequest("user/submission/" + strconv.FormatInt(sid, 10), "")
 }
 
 func(client JotformAPIClient) GetReport(reportID int64) []byte {
-    return client.getRequest("user/report/" + strconv.FormatInt(reportID, 10))
+    return client.getRequest("user/report/" + strconv.FormatInt(reportID, 10), "")
 }
 
 func (client JotformAPIClient) GetFolder(folderID int64) []byte {
-    return client.getRequest("user/folder/" + strconv.FormatInt(folderID, 10))
+    return client.getRequest("user/folder/" + strconv.FormatInt(folderID, 10), "")
 }
 
 func (client JotformAPIClient) GetFormProperties(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/properties")
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", "")
 }
 
 func (client JotformAPIClient) GetFormProperty(formID int64, propertyKey string) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/properties/" + propertyKey)
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/properties/" + propertyKey, "")
 }
 
 func (client JotformAPIClient) DeleteSubmission(sid int64) []byte {
