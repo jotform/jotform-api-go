@@ -216,8 +216,10 @@ func (client JotformAPIClient) GetFormQuestion(formID int64, qid int) []byte {
     return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid), "")
 }
 
-func (client JotformAPIClient) GetFormSubmissions(formID int64) []byte {
-    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/submissions", "")
+func (client JotformAPIClient) GetFormSubmissions(formID int64, offset string, limit string, filter map[string]string, orderBy string) []byte {
+    var params = createConditions(offset, limit, filter, orderBy)
+
+    return client.getRequest("form/" + strconv.FormatInt(formID, 10) + "/submissions", params)
 }
 
 func (client JotformAPIClient) CreateFormSubmissions(formId int64, submission map[string]string) []byte {
