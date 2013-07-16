@@ -142,9 +142,21 @@ func createConditions (offset string, limit string, filter map[string]string, or
     }
 
     if filter != nil {
-        for k,_ := range filter {
-            params = params + "filter={\"" + k + "\":\"" + filter[k] + "\"}" + "&"
+        var value = "{"
+        var count = 0
+
+        for k, _ := range filter {
+            count++
+
+            value = value + "\"" + k + "\":\"" + filter[k] + "\""
+
+            if count < len(filter) {
+                value = value + ","
+            }
         }
+        value = value + "}&"
+
+        params = params + "filter=" + value
     }
 
     if orderBy != "" {
