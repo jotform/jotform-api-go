@@ -292,3 +292,7 @@ func (client JotformAPIClient) EditSubmission(sid int64, submission map[string]s
     return client.postRequest("submission/" + strconv.FormatInt(sid, 10), data)
 }
 
+func (client JotformAPIClient) CloneForm(formID int64) []byte {
+    return client.postRequest("form/" + strconv.FormatInt(formID, 10) + "/clone", nil)
+}
+
