@@ -278,3 +278,17 @@ func (client JotformAPIClient) DeleteSubmission(sid int64) []byte {
     return client.deleteRequest("submission/" + strconv.FormatInt(sid, 10))
 }
 
+func (client JotformAPIClient) EditSubmission(sid int64, submission map[string]string) []byte {
+    data := make(map[string]string)
+
+    for k, _ := range submission {
+        if strings.Contains(k, "_") {
+            data["submission[" + k[0:strings.Index(k, "_")] + "][" + k[strings.Index(k, "_")+1:len(k)] + "]"] = submission[k]
+        } else {
+            data["submission[" + k + "]"] = submission[k]   
+        }
+    }
+
+    return client.postRequest("submission/" + strconv.FormatInt(sid, 10), data)
+}
+
