@@ -174,8 +174,10 @@ func (client JotformAPIClient) GetUsage() []byte {
     return client.getRequest("user/usage", "")
 }
 
-func (client JotformAPIClient) GetForms() []byte {
-    return client.getRequest("user/forms", "")
+func (client JotformAPIClient) GetForms(offset string, limit string, filter map[string]string, orderBy string) []byte {
+    var params = createConditions(offset, limit, filter, orderBy)
+
+    return client.getRequest("user/forms", params)
 }
 
 func (client JotformAPIClient) GetSubmissions(offset string, limit string, filter map[string]string, orderBy string) []byte {
