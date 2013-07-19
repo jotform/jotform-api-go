@@ -296,3 +296,7 @@ func (client JotformAPIClient) CloneForm(formID int64) []byte {
     return client.postRequest("form/" + strconv.FormatInt(formID, 10) + "/clone", nil)
 }
 
+func (client JotformAPIClient) DeleteFormQuestion(formID int64, qid int) []byte {
+    return client.deleteRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid))
+}
+
