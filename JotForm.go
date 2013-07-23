@@ -24,15 +24,7 @@ func NewJotFormAPIClient(apiKey string) *jotformAPIClient {
     return client
 }
 
-func (client jotformAPIClient) checkClient() {
-    if client.apiKey == "" {
-        fmt.Printf("ApiKey is requied!\n")
-        os.Exit(1)
-    }
-}
-
 func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) []byte {
-    client.checkClient()
 
     var path = baseURL + "/" + apiVersion + "/" + requestPath
 
