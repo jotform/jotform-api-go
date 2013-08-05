@@ -362,3 +362,56 @@ func (client jotformAPIClient) DeleteFormQuestion(formID int64, qid int) []byte 
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid), nil, "DELETE")
 }
 
+//CreateFormQuestion
+//Add new question to specified form.
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//questionProperties (map[string]string): New question properties like type and text.
+//Returns properties of new question.
+func (client jotformAPIClient) CreateFormQuestion(formID int64, questionProperties map[string]string) []byte {
+    question := make(map[string]string)
+
+    for k, _ := range questionProperties {
+        question["question[" + k + "]"] = questionProperties[k]
+    }
+
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/questions", question, "POST")
+}
+
+//EditFormQuestion
+//Add or edit a single question properties
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//qid (int): Identifier for each question on a form. You can get a list of question IDs from /form/{id}/questions.
+//questionProperties (map[string]string): New question properties like type and text.
+//Returns edited property and type of question.
+func (client jotformAPIClient) EditFormQuestion(formID int64, qid int, questionProperties map[string]string) []byte {
+    question := make(map[string]string)
+
+    for k, _ := range questionProperties {
+        question["question[" + k + "]"] = questionProperties[k]
+    }
+
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/question/" + strconv.Itoa(qid), question, "POST")
+}
+
+//SetFormProperties
+//Add or edit properties of a specific form
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//formProperties (map[string]string): New properties like label width.
+//Returns edited properties.
+func (client jotformAPIClient) SetFormProperties(formID int64, formProperties map[string]string) []byte {
+    properties := make(map[string]string)
+
+    for k, _ := range formProperties {
+        properties["properties[" + k + "]"] = formProperties[k]
+    }
+
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", properties, "POST")
+}
+
+//DeleteForm
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//Returns properties of deleted form.
+func (client jotformAPIClient) DeleteForm(formID int64) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10), nil, "DELETE")
+}
+
