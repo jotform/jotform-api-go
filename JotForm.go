@@ -119,6 +119,32 @@ func createConditions (offset string, limit string, filter map[string]string, or
     return params
 }
 
+func createHistoryQuery (action string, date string, sortBy string, startDate string, endDate string) string {
+    var params = ""
+
+    if action != "" {
+        params = "action=" + action + "&" 
+    }
+
+    if date != "" {
+        params = params + "date=" + date + "&"
+    }
+
+    if sortBy != "" {
+        params = params + "sortBy=" + sortBy + "&"
+    }
+
+    if startDate != "" {
+        params = params + "startDate=" + startDate + "&"
+    }
+
+    if endDate != "" {
+        params = params + "endDate=" + endDate + "&"
+    }
+
+    return params
+}
+
 //GetUser
 //Get user account details for a JotForm user.
 //Returns user account type, avatar URL, name, email, website URL and account limits.
@@ -189,9 +215,16 @@ func (client jotformAPIClient) GetSettings() []byte {
 
 //GetHistory
 //Get user activity log
+//action (string): Filter results by activity performed. Default is 'all'.
+//date (string): Limit results by a date range. If you'd like to limit results by specific dates you can use startDate and endDate fields instead.
+//sortBy (string): Lists results by ascending and descending order.
+//startDate (string): Limit results to only after a specific date. Format: MM/DD/YYYY.
+//endDate (string): Limit results to only before a specific date. Format: MM/DD/YYYY.
 //Returns activity log about things like forms created/modified/deleted, account logins and other operations.
-func (client jotformAPIClient) GetHistory() []byte {
-    return client.executeHttpRequest("user/history", "", "GET")
+func (client jotformAPIClient) GetHistory(action string, date string, sortBy string, startDate string, endDate string) []byte {
+    var params = createHistoryQuery(action, date, sortBy, startDate, endDate)
+
+    return client.executeHttpRequest("user/history", params, "GET")
 }
 
 //GetForm
