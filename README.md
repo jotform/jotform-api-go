@@ -71,4 +71,4 @@ func main() {
 ``` 
 
 First the _jotform_ package is imported from the _jotform-api-go/JotForm.go_ file. This package provides access to JotForm's API. You have to create an API client instance with your API key. 
-In any case of exception (wrong authentication etc.), you can catch it or let it fail with fatal error.
+In case of an exception (wrong authentication etc.), you can catch it or let it fail with a fatal error.
