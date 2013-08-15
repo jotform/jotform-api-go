@@ -129,26 +129,19 @@ func createConditions (offset string, limit string, filter map[string]string, or
 func createHistoryQuery (action string, date string, sortBy string, startDate string, endDate string) string {
     var params = ""
 
-    if action != "" {
-        params = "action=" + action + "&" 
+    args := map[string]string {
+        "action": action,
+        "date": date,
+        "sortBy": sortBy,
+        "startDate": startDate,
+        "endDate": endDate,
     }
 
-    if date != "" {
-        params = params + "date=" + date + "&"
+    for k, _ := range args {
+        if args[k] != "" {
+            params = params + k + "=" + args[k] + "&"
+        }
     }
-
-    if sortBy != "" {
-        params = params + "sortBy=" + sortBy + "&"
-    }
-
-    if startDate != "" {
-        params = params + "startDate=" + startDate + "&"
-    }
-
-    if endDate != "" {
-        params = params + "endDate=" + endDate + "&"
-    }
-
     return params
 }
 
