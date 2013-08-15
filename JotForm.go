@@ -34,36 +34,32 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     var err error
 
     if method == "GET" {
-        path = path + "?" + params.(string) + "apiKey=" + client.apiKey
-
-        response, err = http.Get(path)
-
+        path = path + "?" + params.(string)
+        request, err = http.NewRequest("GET", path, nil)
+        request.Header.Add("apiKey", client.apiKey)
+        response, err = http.DefaultClient.Do(request)
     } else if method == "POST" {
-        path = path + "?" + "apiKey=" + client.apiKey
-
         data := params.(map[string]string)
-
         values := make(url.Values)
 
         for k, _ := range data {
             values.Set(k, data[k])
         }
 
-        response, err = http.PostForm(path, values)
-
+        request, err = http.NewRequest("POST", path, strings.NewReader(values.Encode()))
+        request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+        request.Header.Add("apiKey", client.apiKey)
+        response, err = http.DefaultClient.Do(request)
     } else  if method == "DELETE" {
-        path = path + "?" + "apiKey=" + client.apiKey
-
         request, err = http.NewRequest("DELETE", path, nil)
-
+        request.Header.Add("apiKey", client.apiKey)
         response, err = http.DefaultClient.Do(request)
     } else if method == "PUT" {
-        path = path + "?" + "apiKey=" + client.apiKey
-
         parameters := params.([]byte)
 
         if err == nil {
             request, err = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
+            request.Header.Add("apiKey", client.apiKey)
             response, err = http.DefaultClient.Do(request)
         }
     }
@@ -108,9 +104,7 @@ func createConditions (offset string, limit string, filter map[string]string, or
 
                 for key, _ := range filter {
                     count++
-
                     value = value + "\"" + key + "\":\"" + filter[key] + "\""
-
                     if count < len(filter) {
                         value = value + ","
                     }
