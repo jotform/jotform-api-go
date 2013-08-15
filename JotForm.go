@@ -60,10 +60,10 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     } else if method == "PUT" {
         path = path + "?" + "apiKey=" + client.apiKey
 
-        res, err := json.Marshal(params)
+        parameters := params.([]byte)
 
         if err == nil {
-            request, err = http.NewRequest("PUT", path, bytes.NewBuffer(res))
+            request, err = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
             response, err = http.DefaultClient.Do(request)
         }
     }
@@ -419,9 +419,9 @@ func (client jotformAPIClient) CreateFormQuestion(formID int64, questionProperti
 //CreateFormQuestion
 //Add new question to specified form.
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
-//questions (map[string]interface{}): New question properties like type and text.
+//questions ([]byte): New question properties like type and text.
 //Returns properties of new question.
-func (client jotformAPIClient) CreateFormQuestions(formID int64, questions map[string]interface{}) []byte {
+func (client jotformAPIClient) CreateFormQuestions(formID int64, questions []byte) []byte {
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/questions", questions, "PUT")
 }
 
@@ -459,17 +459,17 @@ func (client jotformAPIClient) SetFormProperties(formID int64, formProperties ma
 //SetFormProperties
 //Add or edit properties of a specific form
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
-//formProperties (map[string]interface{}): New properties like label width.
+//formProperties ([]byte): New properties like label width.
 //Returns edited properties.
-func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formProperties map[string]interface{}) []byte {
+func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formProperties []byte) []byte {
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", formProperties, "PUT")
 }
 
 //CreateForm
 //Create a new form
-//form (map[string]interface{}): Questions, properties and emails of new form.
+//form ([]byte): Questions, properties and emails of new form.
 //Returns new form.
-func (client jotformAPIClient) CreateForm(form map[string]interface{}) []byte {
+func (client jotformAPIClient) CreateForm(form []byte) []byte {
     return client.executeHttpRequest("user/forms", form, "PUT")
 }
 
