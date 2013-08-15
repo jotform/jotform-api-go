@@ -456,6 +456,15 @@ func (client jotformAPIClient) SetFormProperties(formID int64, formProperties ma
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", properties, "POST")
 }
 
+//SetFormProperties
+//Add or edit properties of a specific form
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//formProperties (map[string]interface{}): New properties like label width.
+//Returns edited properties.
+func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formProperties map[string]interface{}) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", formProperties, "PUT")
+}
+
 //DeleteForm
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
 //Returns properties of deleted form.
