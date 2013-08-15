@@ -465,6 +465,14 @@ func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formPrope
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", formProperties, "PUT")
 }
 
+//CreateForm
+//Create a new form
+//form (map[string]interface{}): Questions, properties and emails of new form.
+//Returns new form.
+func (client jotformAPIClient) CreateForm(form map[string]interface{}) []byte {
+    return client.executeHttpRequest("user/forms", form, "PUT")
+}
+
 //DeleteForm
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
 //Returns properties of deleted form.
