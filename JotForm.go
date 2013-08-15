@@ -90,38 +90,39 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 }
 
 func createConditions (offset string, limit string, filter map[string]string, orderBy string) string {
+
+    args := make(map[string]interface{})
+
+    args["offset"] = offset
+    args["limit"] = limit
+    args["filter"] = filter
+    args["order_by"] = orderBy
+
     var params = ""
 
-    if offset != "" {
-        params = "offset=" + offset + "&"
-    }
+    for k, _ := range args {
+        if k == "filter" {
+            if args[k] != nil {
+                var value = "{"
+                var count = 0
 
-    if limit!= "" {
-        params = params + "limit=" + limit + "&"
-    }
+                for key, _ := range filter {
+                    count++
 
-    if filter != nil {
-        var value = "{"
-        var count = 0
+                    value = value + "\"" + key + "\":\"" + filter[key] + "\""
 
-        for k, _ := range filter {
-            count++
-
-            value = value + "\"" + k + "\":\"" + filter[k] + "\""
-
-            if count < len(filter) {
-                value = value + ","
+                    if count < len(filter) {
+                        value = value + ","
+                    }
+                }
+                params = params + "filter=" + value + "}&"
+            }
+        } else {
+            if args[k] != "" {
+                params = params + k + "=" + args[k].(string) + "&"
             }
         }
-        value = value + "}&"
-
-        params = params + "filter=" + value
     }
-
-    if orderBy != "" {
-        params = params + "order_by=" + orderBy + "&"
-    }
-
     return params
 }
 
