@@ -9,6 +9,7 @@ import(
     "os"
     "encoding/json"
     "strings"
+    "bytes"
 )
 
 const baseURL = "http://api.jotform.com"
@@ -56,7 +57,16 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
         request, err = http.NewRequest("DELETE", path, nil)
 
         response, err = http.DefaultClient.Do(request)
-    } 
+    } else if method == "PUT" {
+        path = path + "?" + "apiKey=" + client.apiKey
+
+        res, err := json.Marshal(params)
+
+        if err == nil {
+            request, err = http.NewRequest("PUT", path, bytes.NewBuffer(res))
+            response, err = http.DefaultClient.Do(request)
+        }
+    }
 
     if err != nil {
         fmt.Printf("%s", err)
@@ -70,13 +80,9 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
         }
 
         var f interface{}
-
         json.Unmarshal(contents, &f)
-
         result := f.(map[string]interface{})["content"]
-
         content, err := json.Marshal(result)
-
         return content
     }
 
@@ -408,6 +414,15 @@ func (client jotformAPIClient) CreateFormQuestion(formID int64, questionProperti
     }
 
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/questions", question, "POST")
+}
+
+//CreateFormQuestion
+//Add new question to specified form.
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//questions (map[string]interface{}): New question properties like type and text.
+//Returns properties of new question.
+func (client jotformAPIClient) CreateFormQuestions(formID int64, questions map[string]interface{}) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/questions", questions, "PUT")
 }
 
 //EditFormQuestion
