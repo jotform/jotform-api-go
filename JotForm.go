@@ -17,15 +17,20 @@ const apiVersion = "v1"
 
 type jotformAPIClient struct{
     apiKey string
+    outputType string
 }
 
-func NewJotFormAPIClient(apiKey string) *jotformAPIClient {
-    client := &jotformAPIClient{apiKey}
+func NewJotFormAPIClient(apiKey string, outputType string) *jotformAPIClient {
+    client := &jotformAPIClient{apiKey, outputType}
 
     return client
 }
 
 func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) []byte {
+
+    if client.outputType != "json" {
+        requestPath = requestPath + ".xml"
+    }
 
     var path = baseURL + "/" + apiVersion + "/" + requestPath
 
