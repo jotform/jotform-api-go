@@ -63,7 +63,10 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     } else if method == "PUT" {
         parameters := params.([]byte)
 
-        if err == nil {
+        if err != nil {
+            fmt.Printf("%s", err)
+            os.Exit(1)
+        } else {
             request, err = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
             request.Header.Add("apiKey", client.apiKey)
             response, err = http.DefaultClient.Do(request)
