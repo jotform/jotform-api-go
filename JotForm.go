@@ -22,7 +22,7 @@ type jotformAPIClient struct{
 }
 
 func NewJotFormAPIClient(apiKey string, outputType string) *jotformAPIClient {
-    client := &jotformAPIClient{apiKey, outputType}
+    client := &jotformAPIClient{apiKey, strings.ToLower(outputType)}
 
     return client
 }
