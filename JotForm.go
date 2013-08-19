@@ -8,6 +8,7 @@ import(
     "io/ioutil"
     "os"
     "encoding/json"
+    "encoding/xml"
     "strings"
     "bytes"
 )
@@ -80,11 +81,23 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
             os.Exit(1)
         }
 
-        var f interface{}
-        json.Unmarshal(contents, &f)
-        result := f.(map[string]interface{})["content"]
-        content, err := json.Marshal(result)
-        return content
+        if client.outputType == "json" {
+            var f interface{}
+            json.Unmarshal(contents, &f)
+            result := f.(map[string]interface{})["content"]
+            content, err := json.Marshal(result)
+
+            if err != nil {
+                fmt.Printf("%s", err)
+                os.Exit(1)
+            } else {
+                return content   
+            }
+        } else if client.outputType == "xml" {
+            var f interface{}
+            xml.Unmarshal(contents, &f)
+            return contents
+        }
     }
 
     return nil
