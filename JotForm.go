@@ -478,7 +478,7 @@ func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formPrope
 //Create a new form
 //form ([]byte): Questions, properties and emails of new form.
 //Returns new form.
-func (client jotformAPIClient) CreateForm(form []byte) []byte {
+func (client jotformAPIClient) CreateForms(form []byte) []byte {
     return client.executeHttpRequest("user/forms", form, "PUT")
 }
 
