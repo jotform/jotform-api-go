@@ -13,7 +13,7 @@ import(
     "bytes"
 )
 
-const baseURL = "http://api.jotform.com"
+const baseURL = "https://api.jotform.com"
 const apiVersion = "v1"
 
 type jotformAPIClient struct{
