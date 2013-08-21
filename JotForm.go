@@ -284,7 +284,7 @@ func (client jotformAPIClient) GetFormSubmissions(formID int64, offset string, l
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
 //submission (map[string]string): Submission data with question IDs.
 //Returns posted submission ID and URL.
-func (client jotformAPIClient) CreateFormSubmissions(formId int64, submission map[string]string) []byte {
+func (client jotformAPIClient) CreateFormSubmission(formId int64, submission map[string]string) []byte {
     data := make(map[string]string)
 
     for k, _ := range submission {
