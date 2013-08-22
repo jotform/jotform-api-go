@@ -13,7 +13,7 @@ import(
     "bytes"
 )
 
-const baseURL = "https://api.jotform.com"
+const baseURL = "http://api.jotform.com"
 const apiVersion = "v1"
 
 type jotformAPIClient struct{
@@ -332,6 +332,15 @@ func (client jotformAPIClient) CreateFormWebhook(formId int64, webhookURL string
     }
 
     return client.executeHttpRequest("form/" + strconv.FormatInt(formId, 10) + "/webhooks", params, "POST")
+}
+
+//Delete a specific webhook of a form.
+//Add a new webhook
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//webhookID (int64): You can get webhook IDs when you call /form/{formID}/webhooks.
+//Returns remaining webhook URLs of form.
+func (client jotformAPIClient) DeleteFormWebhook(formID int64, webhookID int64) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/webhooks/" + strconv.FormatInt(webhookID, 10), nil, "DELETE")
 }
 
 //GetSubmission
