@@ -478,6 +478,36 @@ func (client jotformAPIClient) SetMultipleFormProperties(formID int64, formPrope
 //Create a new form
 //form ([]byte): Questions, properties and emails of new form.
 //Returns new form.
+func (client jotformAPIClient) CreateForm(form map[string]interface{}) []byte{
+    params := make(map[string]string)
+
+    for formKey, formValue := range form {
+            if formKey == "properties" {
+                    properties := formValue
+
+                    for properyKey, propertyValue := range properties.(map[string]string) {
+                            params[formKey + "[" + properyKey + "]"] = propertyValue
+                    }
+            } else {
+                    formItem := formValue
+
+                    for formItemKey, formItemValue := range formItem.(map[string]interface{}) {
+                            item := formItemValue
+
+                            for itemKey, itemValue := range item.(map[string]string) {
+                                    params[formKey + "[" + formItemKey + "][" + itemKey + "]"] = itemValue
+                            }
+                    }
+            }
+    }
+
+    return client.executeHttpRequest("user/forms", params, "POST")
+}
+
+//Create new forms
+//Create a new form
+//form ([]byte): Questions, properties and emails of forms.
+//Returns new forms.
 func (client jotformAPIClient) CreateForms(form []byte) []byte {
     return client.executeHttpRequest("user/forms", form, "PUT")
 }
