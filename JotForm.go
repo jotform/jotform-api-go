@@ -286,7 +286,7 @@ func (client jotformAPIClient) GetFormSubmissions(formID int64, offset string, l
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/submissions", params, "GET")
 }
 
-//CreateFormSubmissions
+//CreateFormSubmission
 //Submit data to this form using the API
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
 //submission (map[string]string): Submission data with question IDs.
@@ -303,6 +303,15 @@ func (client jotformAPIClient) CreateFormSubmission(formId int64, submission map
     }
 
     return client.executeHttpRequest("form/" + strconv.FormatInt(formId, 10) + "/submissions", data, "POST")
+}
+
+//CreateFormSubmissions
+//Submit data to this form using the API
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//submission (map[string]string): Submission data with question IDs.
+//Returns posted submission ID and URL.
+func (client jotformAPIClient) CreateFormSubmissions(formId int64, submission []byte) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formId, 10) + "/submissions", submission, "PUT")
 }
 
 //GetFormFiles
