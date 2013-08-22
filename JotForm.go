@@ -228,6 +228,13 @@ func (client jotformAPIClient) GetSettings() []byte {
     return client.executeHttpRequest("user/settings", "", "GET")
 }
 
+//Update user's settings
+//New user setting values with setting keys
+//Returns changes on user settings
+func (client jotformAPIClient) UpdateSettings(settings map[string]string) []byte {
+    return client.executeHttpRequest("user/settings", settings, "POST")
+}
+
 //GetHistory
 //Get user activity log
 //action (string): Filter results by activity performed. Default is 'all'.
