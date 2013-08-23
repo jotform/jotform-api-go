@@ -544,3 +544,11 @@ func (client jotformAPIClient) DeleteForm(formID int64) []byte {
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10), nil, "DELETE")
 }
 
+//RegisterUser
+//Register with username, password and email
+//userDetails (map[string]string): Username, password and email to register a new user
+//Returns new user's details
+func (client jotformAPIClient) RegisterUser(userDetails map[string]string) []byte {
+    return client.executeHttpRequest("user/register", userDetails, "POST")
+}
+
