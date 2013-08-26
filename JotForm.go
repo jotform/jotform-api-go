@@ -1,3 +1,9 @@
+// JotForm API - GO Client
+// copyright   2013 Interlogy, LLC.
+// link        http://www.jotform.com
+// version     1.0
+// package     JotFormAPI
+
 package jotform
 
 import(
