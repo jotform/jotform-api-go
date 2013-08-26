@@ -552,3 +552,11 @@ func (client jotformAPIClient) RegisterUser(userDetails map[string]string) []byt
     return client.executeHttpRequest("user/register", userDetails, "POST")
 }
 
+//LoginUser
+//Login user with given credentials
+//credentials (map[string]string): Username, password, application name and access type of user
+//Returns logged in user's settings and app key
+func (client jotformAPIClient) LoginUser(credentials map[string]string) []byte {
+    return client.executeHttpRequest("user/login", credentials, "POST");
+}
+
