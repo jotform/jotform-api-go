@@ -25,17 +25,26 @@ const apiVersion = "v1"
 type jotformAPIClient struct{
     apiKey string
     outputType string
+    debugMode bool
 }
 
-func NewJotFormAPIClient(apiKey string, outputType string) *jotformAPIClient {
-    client := &jotformAPIClient{apiKey, strings.ToLower(outputType)}
+func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotformAPIClient {
+    client := &jotformAPIClient{apiKey, strings.ToLower(outputType), debugMode}
 
     return client
 }
 
 func (client jotformAPIClient) GetOutputType() string {return client.outputType}
-
 func (client *jotformAPIClient) SetOutputType(value string) {client.outputType = value}
+
+func (client jotformAPIClient) GetDebugMode() string {return client.debugMode}
+func (client *jotformAPIClient) SetDebugMode(value bool) {client.debugMode = value}
+
+func (client jotformAPIClient) debug(str interface{}) {
+    if client.debugMode {
+        fmt.Println(str)
+    }
+}
 
 func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) []byte {
 
@@ -44,10 +53,13 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     }
 
     var path = baseURL + "/" + apiVersion + "/" + requestPath
+    client.debug(path)
 
     var response *http.Response
     var request *http.Request
     var err error
+
+    client.debug(params)
 
     if method == "GET" {
         path = path + "?" + params.(string)
