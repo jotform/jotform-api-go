@@ -33,6 +33,10 @@ func NewJotFormAPIClient(apiKey string, outputType string) *jotformAPIClient {
     return client
 }
 
+func (client jotformAPIClient) GetOutputType() string {return client.outputType}
+
+func (client *jotformAPIClient) SetOutputType(value string) {client.outputType = value}
+
 func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) []byte {
 
     if client.outputType != "json" {
@@ -227,16 +231,16 @@ func (client jotformAPIClient) GetReports() []byte {
     return client.executeHttpRequest("user/reports", "", "GET")
 }
 
-//GetSettings
-//Get user's settings for this account
-//Returns user's time zone and language.
+//Update user's settings
+//New user setting values with setting keys
+//Returns changes on user settings
 func (client jotformAPIClient) GetSettings() []byte {
     return client.executeHttpRequest("user/settings", "", "GET")
 }
 
-//Update user's settings
-//New user setting values with setting keys
-//Returns changes on user settings
+//GetSettings
+//Get user's settings for this account
+//Returns user's time zone and language.
 func (client jotformAPIClient) UpdateSettings(settings map[string]string) []byte {
     return client.executeHttpRequest("user/settings", settings, "POST")
 }
