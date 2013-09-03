@@ -37,7 +37,7 @@ func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotf
 func (client jotformAPIClient) GetOutputType() string {return client.outputType}
 func (client *jotformAPIClient) SetOutputType(value string) {client.outputType = value}
 
-func (client jotformAPIClient) GetDebugMode() string {return client.debugMode}
+func (client jotformAPIClient) GetDebugMode() bool {return client.debugMode}
 func (client *jotformAPIClient) SetDebugMode(value bool) {client.debugMode = value}
 
 func (client jotformAPIClient) debug(str interface{}) {
