@@ -405,6 +405,14 @@ func (client jotformAPIClient) GetFormProperties(formID int64) []byte {
     return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/properties", "", "GET")
 }
 
+//GetFormReports
+//Get all the reports of a form, such as excel, csv, grid, html, etc.
+//formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
+//Returns list of all reports in a form, and other details about the reports such as title.
+func (client jotformAPIClient) GetFormReports(formID int64) []byte {
+    return client.executeHttpRequest("form/" + strconv.FormatInt(formID, 10) + "/reports", "", "GET")
+}
+
 //GetFormProperty
 //Get a specific property of the form.]
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
