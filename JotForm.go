@@ -393,8 +393,8 @@ func(client jotformAPIClient) GetReport(reportID int64) []byte {
 //GetFolder
 //folderID (int64): You can get a list of folders from /user/folders.
 //Returns a list of forms in a folder, and other details about the form such as folder color.
-func (client jotformAPIClient) GetFolder(folderID int64) []byte {
-    return client.executeHttpRequest("user/folder/" + strconv.FormatInt(folderID, 10), "", "GET")
+func (client jotformAPIClient) GetFolder(folderID string) []byte {
+    return client.executeHttpRequest("folder/" + folderID, "", "GET")
 }
 
 //GetFormProperties
