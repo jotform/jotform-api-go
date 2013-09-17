@@ -4,7 +4,7 @@
 // version     1.0
 // package     JotFormAPI
 
-package jotform
+package wrapper
 
 import(
     "fmt"
@@ -135,7 +135,7 @@ func createConditions (offset string, limit string, filter map[string]string, or
     args["offset"] = offset
     args["limit"] = limit
     args["filter"] = filter
-    args["order_by"] = orderBy
+    args["orderby"] = orderBy
 
     var params = ""
 
