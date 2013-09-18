@@ -4,7 +4,7 @@
 // version     1.0
 // package     JotFormAPI
 
-package wrapper
+package jotform
 
 import(
     "fmt"
@@ -448,7 +448,7 @@ func (client jotformAPIClient) EditSubmission(sid int64, submission map[string]s
     data := make(map[string]string)
 
     for k, _ := range submission {
-        if strings.Contains(k, "_") {
+        if strings.Contains(k, "_") && k!= "created_at" {
             data["submission[" + k[0:strings.Index(k, "_")] + "][" + k[strings.Index(k, "_")+1:len(k)] + "]"] = submission[k]
         } else {
             data["submission[" + k + "]"] = submission[k]   
