@@ -138,36 +138,25 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     return nil
 }
 
-func createConditions (offset string, limit string, filter map[string]string, orderBy string) string {
+func createConditions(offset string, limit string, filter map[string]string, orderby string) map[string]string {
+    args := map[string]interface{}{
+        "offset": offset,
+        "limit": limit,
+        "filter": filter,
+        "orderby": orderby,
+    }
 
-    args := make(map[string]interface{})
-
-    args["offset"] = offset
-    args["limit"] = limit
-    args["filter"] = filter
-    args["orderby"] = orderBy
-
-    var params = ""
+    params := make(map[string]string)
 
     for k, _ := range args {
         if k == "filter" {
-            if args[k] != nil {
-                var value = "{"
-                var count = 0
+            filterObj, err := json.Marshal(filter)
 
-                for key, _ := range filter {
-                    count++
-                    value = value + "\"" + key + "\":\"" + filter[key] + "\""
-                    if count < len(filter) {
-                        value = value + ","
-                    }
-                }
-                params = params + "filter=" + value + "}&"
+            if err == nil {
+                params["filter"] = string(filterObj)
             }
-        } else {
-            if args[k] != "" {
-                params = params + k + "=" + args[k].(string) + "&"
-            }
+        }else {
+            params[k] = args[k].(string)
         }
     }
     return params
