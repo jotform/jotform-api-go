@@ -62,8 +62,18 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
     client.debug(params)
 
     if method == "GET" {
-        path = path + "?" + params.(string)
+        if params != "" {
+            data := params.(map[string]string)
+            values := make(url.Values)
+
+            for k, _ := range data {
+                values.Set(k, data[k])
+            }
+            path = path +"?"+ values.Encode()
+        }
+
         request, err = http.NewRequest("GET", path, nil)
+        request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
         request.Header.Add("apiKey", client.apiKey)
         response, err = http.DefaultClient.Do(request)
     } else if method == "POST" {
