@@ -598,6 +598,13 @@ func (client jotformAPIClient) LoginUser(credentials map[string]string) []byte {
     return client.executeHttpRequest("user/login", credentials, "POST");
 }
 
+//LogoutUser
+//Logout user
+//Returns status of request
+func (client jotformAPIClient) LogoutUser() []byte {
+    return client.executeHttpRequest("user/logout", "", "GET")   
+}
+
 //GetPlan
 //Get details of a plan
 //planName (string): Name of the requested plan. FREE, PREMIUM etc.
