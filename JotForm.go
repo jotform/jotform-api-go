@@ -613,3 +613,9 @@ func (client jotformAPIClient) GetPlan(planName string) []byte {
     return client.executeHttpRequest("system/plan/" + planName, "", "GET")
 }
 
+//DeleteReport
+//reportID (int64): You can get a list of reports from /user/reports.
+//Returns status of request.
+func (client jotformAPIClient) DeleteReport(reportID int64) []byte {
+    return client.executeHttpRequest("report/" + strconv.FormatInt(reportID, 10), nil, "DELETE")
+}
