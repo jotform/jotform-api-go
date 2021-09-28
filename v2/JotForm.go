@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const baseURL = "http://api.jotform.com"
+const defaultBaseURL = "http://api.jotform.com"
 const apiVersion = "v1"
 
 type jotformAPIClient struct {
@@ -22,6 +22,7 @@ type jotformAPIClient struct {
 	outputType string
 	debugMode  bool
 	HttpClient *http.Client
+	BaseURL    string
 }
 
 func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotformAPIClient {
@@ -37,6 +38,7 @@ func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotf
 				DisableKeepAlives: true,
 			},
 		},
+		BaseURL: defaultBaseURL,
 	}
 
 	return client
@@ -60,7 +62,7 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 		requestPath = requestPath + ".xml"
 	}
 
-	var path = baseURL + "/" + apiVersion + "/" + requestPath
+	var path = client.BaseURL + "/" + apiVersion + "/" + requestPath
 	client.debug(path)
 
 	var response *http.Response
