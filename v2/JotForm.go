@@ -108,30 +108,29 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 
 	if err != nil {
 		return nil, err
-	} else {
-		defer response.Body.Close()
-		contents, err := ioutil.ReadAll(response.Body)
+	}
+
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if client.outputType == "json" {
+		var f interface{}
+		json.Unmarshal(contents, &f)
+		result := f.(map[string]interface{})["content"]
+		content, err := json.Marshal(result)
+
 		if err != nil {
-			fmt.Printf("%s", err)
 			return nil, err
+		} else {
+			return content, nil
 		}
-
-		if client.outputType == "json" {
-			var f interface{}
-			json.Unmarshal(contents, &f)
-			result := f.(map[string]interface{})["content"]
-			content, err := json.Marshal(result)
-
-			if err != nil {
-				return nil, err
-			} else {
-				return content, nil
-			}
-		} else if client.outputType == "xml" {
-			var f interface{}
-			xml.Unmarshal(contents, &f)
-			return contents, nil
-		}
+	} else if client.outputType == "xml" {
+		var f interface{}
+		xml.Unmarshal(contents, &f)
+		return contents, nil
 	}
 
 	return nil, nil
