@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const baseURL = "http://api.jotform.com"
@@ -20,10 +21,23 @@ type jotformAPIClient struct {
 	apiKey     string
 	outputType string
 	debugMode  bool
+	HttpClient *http.Client
 }
 
 func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotformAPIClient {
-	client := &jotformAPIClient{apiKey, strings.ToLower(outputType), debugMode}
+	client := &jotformAPIClient{
+		apiKey:     apiKey,
+		outputType: strings.ToLower(outputType),
+		debugMode:  debugMode,
+		HttpClient: &http.Client{
+			Timeout: time.Second * 60,
+			Transport: &http.Transport{
+				// We occasionally see EOF responses, which may be caused
+				// by net/http's default connection reuse.
+				DisableKeepAlives: true,
+			},
+		},
+	}
 
 	return client
 }
@@ -69,7 +83,7 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 		request, err = http.NewRequest("GET", path, nil)
 		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		request.Header.Add("apiKey", client.apiKey)
-		response, err = http.DefaultClient.Do(request)
+		response, err = client.HttpClient.Do(request)
 	} else if method == "POST" {
 		data := params.(map[string]string)
 		values := make(url.Values)
@@ -81,11 +95,11 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 		request, err = http.NewRequest("POST", path, strings.NewReader(values.Encode()))
 		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		request.Header.Add("apiKey", client.apiKey)
-		response, err = http.DefaultClient.Do(request)
+		response, err = client.HttpClient.Do(request)
 	} else if method == "DELETE" {
 		request, err = http.NewRequest("DELETE", path, nil)
 		request.Header.Add("apiKey", client.apiKey)
-		response, err = http.DefaultClient.Do(request)
+		response, err = client.HttpClient.Do(request)
 	} else if method == "PUT" {
 		parameters := params.([]byte)
 
@@ -95,7 +109,7 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 		} else {
 			request, err = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
 			request.Header.Add("apiKey", client.apiKey)
-			response, err = http.DefaultClient.Do(request)
+			response, err = client.HttpClient.Do(request)
 		}
 	}
 
