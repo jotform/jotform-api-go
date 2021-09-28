@@ -55,20 +55,16 @@ func (client jotformAPIClient) debug(str interface{}) {
 	}
 }
 
-func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) ([]byte, error) {
-
+func (client jotformAPIClient) newRequest(requestPath string, params interface{}, method string) *http.Request {
 	if client.outputType != "json" {
 		requestPath = requestPath + ".xml"
 	}
 
 	var path = client.BaseURL + "/" + apiVersion + "/" + requestPath
 	client.debug(path)
-
-	var response *http.Response
-	var request *http.Request
-	var err error
-
 	client.debug(params)
+
+	var request *http.Request
 
 	if method == "GET" {
 		if params != "" {
@@ -81,10 +77,8 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 			path = path + "?" + values.Encode()
 		}
 
-		request, err = http.NewRequest("GET", path, nil)
+		request, _ = http.NewRequest("GET", path, nil)
 		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-		request.Header.Add("apiKey", client.apiKey)
-		response, err = client.HttpClient.Do(request)
 	} else if method == "POST" {
 		data := params.(map[string]string)
 		values := make(url.Values)
@@ -93,25 +87,24 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 			values.Set(k, data[k])
 		}
 
-		request, err = http.NewRequest("POST", path, strings.NewReader(values.Encode()))
+		request, _ = http.NewRequest("POST", path, strings.NewReader(values.Encode()))
 		request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-		request.Header.Add("apiKey", client.apiKey)
-		response, err = client.HttpClient.Do(request)
 	} else if method == "DELETE" {
-		request, err = http.NewRequest("DELETE", path, nil)
-		request.Header.Add("apiKey", client.apiKey)
-		response, err = client.HttpClient.Do(request)
+		request, _ = http.NewRequest("DELETE", path, nil)
 	} else if method == "PUT" {
 		parameters := params.([]byte)
-
-		if err != nil {
-			return nil, err
-		} else {
-			request, err = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
-			request.Header.Add("apiKey", client.apiKey)
-			response, err = client.HttpClient.Do(request)
-		}
+		request, _ = http.NewRequest("PUT", path, bytes.NewBuffer(parameters))
 	}
+
+	request.Header.Add("apiKey", client.apiKey)
+	return request
+}
+
+func (client jotformAPIClient) executeHttpRequest(requestPath string, params interface{}, method string) ([]byte, error) {
+
+	response, err := client.HttpClient.Do(
+		client.newRequest(requestPath, params, method),
+	)
 
 	if err != nil {
 		return nil, err
