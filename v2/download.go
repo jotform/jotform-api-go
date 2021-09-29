@@ -1,9 +1,12 @@
 package jotform
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 )
+
+var ErrNotImplemented = errors.New("Not Implemented")
 
 // DownloadFormattedPDFSubmission returns a PDF
 // for the provided submissionID and formID
@@ -20,6 +23,12 @@ func (client jotformAPIClient) DownloadFormattedPDFSubmission(formID, submission
 
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode == 400 {
+		// This is a response like:
+		// {"responseCode":400,"message":"draw-pdf-answers Request Failed","content":"","duration":"98.08ms","info":"https:\/\/api.jotform.com\/docs#pdf-converter-id-fill-pdf"}
+		return nil, fmt.Errorf("Jotform form %s does not have an associated PDF: %w", formID, ErrNotImplemented)
 	}
 
 	if resp.StatusCode >= 300 {
