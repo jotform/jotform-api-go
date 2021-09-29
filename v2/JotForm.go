@@ -123,8 +123,11 @@ func (client jotformAPIClient) executeHttpRequest(requestPath string, params int
 	if client.outputType == "json" {
 		var f interface{}
 		json.Unmarshal(contents, &f)
-		result := f.(map[string]interface{})["content"]
-		content, err := json.Marshal(result)
+		result, ok := f.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("Unexpected non-json response")
+		}
+		content, err := json.Marshal(result["content"])
 
 		if err != nil {
 			return nil, err
