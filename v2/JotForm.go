@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const defaultBaseURL = "http://api.jotform.com"
+const defaultBaseURL = "https://api.jotform.com"
 const apiVersion = "v1"
 
 type jotformAPIClient struct {
