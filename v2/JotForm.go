@@ -16,11 +16,15 @@ import (
 const defaultBaseURL = "https://api.jotform.com"
 const apiVersion = "v1"
 
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type jotformAPIClient struct {
 	apiKey     string
 	outputType string
 	debugMode  bool
-	HttpClient *http.Client
+	HttpClient HttpClient
 	BaseURL    string
 }
 
