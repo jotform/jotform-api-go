@@ -24,6 +24,7 @@ func (client jotformAPIClient) DownloadFormattedPDFSubmission(formID, submission
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode == 400 {
 		// This is a response like:
@@ -35,7 +36,6 @@ func (client jotformAPIClient) DownloadFormattedPDFSubmission(formID, submission
 		return nil, fmt.Errorf("Jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
 	}
 
-	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -61,12 +61,12 @@ func (client jotformAPIClient) DownloadSimplePDFSubmission(formID, submissionID 
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
 		return nil, fmt.Errorf("Jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
 	}
 
-	defer resp.Body.Close()
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
