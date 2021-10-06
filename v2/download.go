@@ -8,11 +8,11 @@ import (
 
 var ErrNotImplemented = errors.New("Not Implemented")
 
-// DownloadFormattedPDFSubmission returns a PDF
+// DownloadRichPDFSubmission returns a PDF
 // for the provided submissionID and formID
 // that was specifically formatted for that formID,
 // ie. the form was created in Jotform from a PDF.
-func (client jotformAPIClient) DownloadFormattedPDFSubmission(formID, submissionID string) ([]byte, error) {
+func (client jotformAPIClient) DownloadRichPDFSubmission(formID, submissionID string) ([]byte, error) {
 	resp, err := client.HttpClient.Do(client.newRequest(
 		fmt.Sprintf("pdf-converter/%s/fill-pdf", submissionID),
 		map[string]string{
@@ -46,15 +46,22 @@ func (client jotformAPIClient) DownloadFormattedPDFSubmission(formID, submission
 
 // DownloadSimplePDFSubmission returns a PDF
 // with the form names and values filled out
-// but not formatted in any special way
-func (client jotformAPIClient) DownloadSimplePDFSubmission(formID, submissionID string) ([]byte, error) {
+// formatted by the provided reportID.
+// If no reportID is provided or the provided ID does not exist,
+// this will default to the first PDF listed on the PDF Editor.
+// If no PDFs exist on the PDF editor, this will generate one.
+func (client jotformAPIClient) DownloadSimplePDFSubmission(formID, submissionID, reportID string) ([]byte, error) {
+	query := map[string]string{
+		"formid":       formID,
+		"submissionid": submissionID,
+		"download":     "1",
+	}
+	if reportID != "" {
+		query["reportid"] = reportID
+	}
 	resp, err := client.HttpClient.Do(client.newRequest(
 		"generatePDF",
-		map[string]string{
-			"formid":       formID,
-			"submissionid": submissionID,
-			"download":     "1",
-		},
+		query,
 		"GET",
 	))
 
