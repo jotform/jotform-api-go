@@ -33,7 +33,7 @@ func TestDownloadRichPDFSubmission(t *testing.T) {
 
 		res, err := client.DownloadRichPDFSubmission(formID, submissionID)
 		assert.Nil(t, err)
-		assert.Equal(t, reqURL, fmt.Sprintf("https://api.jotform.com/v1/pdf-converter/%s/fill-pdf?formid=%s", submissionID, formID))
+		assert.Equal(t, reqURL, fmt.Sprintf("https://api.jotform.com/v1/pdf-converter/%s/fill-pdf?submissionID=%s", formID, submissionID))
 		assert.Equal(t, pdfString, string(res))
 	})
 
