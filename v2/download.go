@@ -14,9 +14,9 @@ var ErrNotImplemented = errors.New("Not Implemented")
 // ie. the form was created in Jotform from a PDF.
 func (client jotformAPIClient) DownloadRichPDFSubmission(formID, submissionID string) ([]byte, error) {
 	resp, err := client.HttpClient.Do(client.newRequest(
-		fmt.Sprintf("pdf-converter/%s/fill-pdf", submissionID),
+		fmt.Sprintf("pdf-converter/%s/fill-pdf", formID),
 		map[string]string{
-			"formid": formID,
+			"submissionID": submissionID,
 		},
 		"GET",
 	))
