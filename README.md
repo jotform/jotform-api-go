@@ -2,6 +2,13 @@ jotform-api-go
 ==============
 [JotForm API](http://api.jotform.com/docs/) - GO Client
 
+**Strongly consider using [v2 of the jotform-api-go client!](https://github.com/jotform/jotform-api-go/v2)!**
+
+v1 works for user scripts, but is unsafe for use in servers.
+It also silently hides some errors,
+and is generally less useable than v2.
+
+
 ### Installation
 
 Install via git clone:
@@ -50,7 +57,11 @@ import (
 
 func main() {
 
-    jotformAPI := jotform.NewJotFormAPIClient("YOUR API KEY")
+    jotformAPI := jotform.NewJotFormAPIClient(
+        "YOUR API KEY",
+        "json", // or "xml", depending on how you want results to be formatted
+        false,  // when true, this prints debugging information on each request
+    )
 
 
     submissionFilter := map[string]string {
