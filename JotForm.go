@@ -396,6 +396,62 @@ func (client jotformAPIClient) GetFolder(folderID string) []byte {
 	return client.executeHttpRequest("folder/"+folderID, "", "GET")
 }
 
+//CreateFolder
+//folderProperties (map[string]string): Properties of new folder.
+//Returns folder details.
+func (client jotformAPIClient) CreateFolder(folderProperties map[string]string) []byte {
+	return client.executeHttpRequest("folder", folderProperties, "POST")
+}
+
+//DeleteFolder
+//folderID (string): You can get the list of folders from /user/folders.
+//Returns status of the request.
+func (client jotformAPIClient) DeleteFolder(folderID string) []byte {
+	return client.executeHttpRequest("folder/"+folderID, nil, "DELETE")
+}
+
+//UpdateFolder
+//folderID (string): You can get the list of folders from /user/folders.
+//folderProperties ([]byte): Properties of folder.
+//Returns status of the request.
+func (client jotformAPIClient) UpdateFolder(folderID string, folderProperties []byte) []byte {
+	return client.executeHttpRequest("folder/"+folderID, folderProperties, "PUT")
+}
+
+//AddFormsToFolder
+//folderID (string): You can get the list of folders from /user/folders.
+//formIDs ([]string): You can get the list of forms from /user/forms.
+//Returns status of the request.
+func (client jotformAPIClient) AddFormsToFolder(folderID string, formIDs []string) []byte {
+	formattedFormIDs, err := json.Marshal(map[string][]string{
+		"forms": formIDs,
+	})
+
+	if err != nil {
+		fmt.Printf("%s", err)
+		os.Exit(1)
+	}
+
+	return client.executeHttpRequest("folder/"+folderID, formattedFormIDs, "PUT")
+}
+
+//AddFormToFolder
+//folderID (string): You can get a list of folders from /user/folders.
+//formID (string): You can get the list of forms from /user/forms.
+//Returns status of the request.
+func (client jotformAPIClient) AddFormToFolder(folderID string, formID string) []byte {
+	formattedFormID, err := json.Marshal(map[string][]string{
+		"forms": {formID},
+	})
+
+	if err != nil {
+		fmt.Printf("%s", err)
+		os.Exit(1)
+	}
+
+	return client.executeHttpRequest("folder/"+folderID, formattedFormID, "PUT")
+}
+
 //GetFormProperties
 //Get a list of all properties on a form
 //formID (int64): Form ID is the numbers you see on a form URL. You can get form IDs when you call /user/forms.
