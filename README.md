@@ -2,7 +2,7 @@ jotform-api-go
 ==============
 [JotForm API](https://api.jotform.com/docs/) - GO Client
 
-**Strongly consider using [v2 of the jotform-api-go client!](https://github.com/jotform/jotform-api-go/v2)!**
+**Strongly consider using [v2 of the jotform-api-go client!](https://github.com/jotform/jotform-api-go/tree/master/v2)!**
 
 v1 works for user scripts, but is unsafe for use in long-running servers.
 It also silently hides some errors, and is generally less useable than v2.
